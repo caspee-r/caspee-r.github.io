@@ -1,37 +1,15 @@
 ---
-interface Props { lang?: 'en' | 'ar' }
-const { lang = 'en' } = Astro.props;
-
 const t = {
-  en: {
-    home: '/', mark: 'S.D.',
-    links: [
-      { href: '/projects', label: 'Projects' },
-      { href: '/articles', label: 'Articles' },
-      { href: '/about', label: 'About' },
-    ],
-    otherLang: 'ar', otherLabel: 'عربي', resume: 'Resume', resumeHref: '/resume.pdf',
-  },
-  ar: {
-    home: '/ar', mark: 'س.د.',
-    links: [
-      { href: '/ar/projects', label: 'المشاريع' },
-      { href: '/ar/articles', label: 'المقالات' },
-      { href: '/ar/about', label: 'نبذة عني' },
-    ],
-    otherLang: 'en', otherLabel: 'EN', resume: 'السيرة الذاتية', resumeHref: '/resume.pdf',
-  },
-}[lang];
-const pathname = Astro.url.pathname;
-
-const otherHref =
-  lang === 'ar'
-    ? pathname === '/ar'
-      ? '/'
-      : pathname.replace(/^\/ar(?=\/|$)/, '')
-    : pathname === '/'
-      ? '/ar'
-      : `/ar${pathname}`;
+  home: '/',
+  mark: 'S.D.',
+  links: [
+    { href: '/projects', label: 'Projects' },
+    { href: '/articles', label: 'Articles' },
+    { href: '/about', label: 'About' },
+  ],
+  resume: 'Resume',
+  resumeHref: '/resume.pdf',
+};
 ---
 <nav class="nav" id="top">
   <div class="nav__primary">
@@ -46,7 +24,6 @@ const otherHref =
   </div>
   <div class="nav__controls">
     <a href={t.resumeHref} class="nav__resume" download>{t.resume}</a>
-    <a href={otherHref} class="nav__lang">{t.otherLabel}</a>
     <button type="button" class="nav__theme" data-theme-toggle aria-label="Toggle dark mode">
       <svg class="icon icon--sun" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
         <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.6"/>
@@ -170,27 +147,6 @@ const otherHref =
     border-color: var(--accent);
   }
 
-  .nav__lang {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 2.75rem;
-    min-height: 2.75rem;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    text-decoration: none;
-    color: var(--ink-soft);
-    border: 1px solid var(--line);
-    border-radius: 3px;
-    padding: 0 0.45rem;
-    transition: color 0.15s ease, border-color 0.15s ease;
-  }
-  .nav__lang:hover, .nav__lang:focus-visible {
-    color: var(--accent);
-    border-color: var(--accent);
-  }
-
   .nav__theme {
     display: flex;
     align-items: center;
@@ -217,6 +173,33 @@ const otherHref =
   @media (prefers-color-scheme: dark) {
     :global(:root:not([data-theme="light"])) .icon--sun { display: none; }
     :global(:root:not([data-theme="light"])) .icon--moon { display: block; }
+  }
+
+  @media (max-width: 480px) {
+    .nav {
+      padding: 0.85rem 1rem;
+    }
+    .nav__primary {
+      gap: 1.1rem;
+    }
+    .nav__links {
+      gap: 0.9rem;
+    }
+    .nav__links a {
+      font-size: 0.75rem;
+    }
+    .nav__controls {
+      gap: 0.6rem;
+    }
+    .nav__resume {
+      min-height: 2.4rem;
+      padding: 0 0.5rem;
+      font-size: 0.68rem;
+    }
+    .nav__theme {
+      width: 2.4rem;
+      height: 2.4rem;
+    }
   }
 </style>
 

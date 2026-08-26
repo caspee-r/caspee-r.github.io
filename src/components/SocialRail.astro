@@ -1,8 +1,5 @@
 ---
-interface Props { lang?: 'en' | 'ar' }
-const { lang = 'en' } = Astro.props;
-
-const label = lang === 'ar' ? 'أخرى' : 'elsewhere';
+const label = 'elsewhere';
 
 const socials = [
   {
@@ -39,7 +36,7 @@ const socials = [
       </li>
     ))}
   </ul>
-  <span class:list={["rail__label", { "rail__label--rtl": lang === 'ar' }]}>{label}</span>
+  <span class="rail__label">{label}</span>
 </aside>
 
 <style>
@@ -92,20 +89,8 @@ const socials = [
     border-top: 1px solid var(--line);
   }
 
-  /* Arabic script doesn't render well rotated in vertical-rl; keep it flat and small */
-  .rail__label--rtl {
-    writing-mode: horizontal-tb;
-    transform: none;
-    font-size: 0.6rem;
-    text-transform: none;
-    letter-spacing: 0.02em;
-    max-width: 3.5rem;
-    text-align: center;
-  }
-
   @media (max-width: 860px) {
     .rail {
-      grid-area: social;
       position: static;
       flex-direction: row;
       justify-content: center;
@@ -114,5 +99,16 @@ const socials = [
     }
     .rail ul { flex-direction: row; gap: 1.5rem; }
     .rail__label { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    .rail {
+      padding: 0.85rem 1rem;
+    }
+    .rail ul { gap: 1rem; }
+    .rail a {
+      width: 2.4rem;
+      height: 2.4rem;
+    }
   }
 </style>

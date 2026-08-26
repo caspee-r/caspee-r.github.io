@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
 
 const projects = [
   {
@@ -14,22 +15,30 @@ const projects = [
   },
 ];
 
-const articles = [
-  {
-    date: '2026.07',
-    title: 'Writing docs engineers actually read',
-    dek: 'Why the best technical docs read like well-commented code, not marketing copy.',
-    href: '/articles/writing-docs-engineers-read',
-  },
-  {
-    date: '2026.03',
-    title: 'The half-life of a good README',
-    dek: 'Most READMEs are accurate on day one and wrong by day ninety. Here is how to slow the decay.',
-    href: '/articles/half-life-of-a-readme',
-  },
-];
+function formatDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  return `${year}.${month}`;
+}
+
+const allArticles = await getCollection('articles', ({ data }) => {
+  return data.draft !== true;
+});
+
+const recentArticles = allArticles
+  .sort(
+    (a, b) =>
+      new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+  )
+  .slice(0, 3)
+  .map((article) => ({
+    date: formatDate(new Date(article.data.date)),
+    title: article.data.title,
+    dek: article.data.description,
+    href: `/articles/${article.slug}/`,
+  }));
 ---
-<BaseLayout title="Sami Djellabi — Software Engineer & Technical Writer" lang="en">
+<BaseLayout title="Sami Djellabi — Software Engineer & Technical Writer">
   <section class="identity">
     <div class="name">
       <span class="index">01</span>
@@ -41,6 +50,12 @@ const articles = [
       <span>Technical writer</span>
     </p>
   </section>
+
+  <p class="bio">
+    I build backend tools and internal platforms — the kind of software
+    that's supposed to be boring, and mostly is, until it isn't. I write
+    about whatever breaks that assumption.
+  </p>
 
   <section class="list-section" aria-labelledby="work-heading">
     <span class="annot">selected work</span>
@@ -65,7 +80,7 @@ const articles = [
     <span class="annot">selected writing</span>
     <h2 id="writing-heading" class="visually-hidden">Writing</h2>
     <ul class="entries">
-      {articles.map((a) => (
+      {recentArticles.map((a) => (
         <li class="entry">
           <a class="entry__link" href={a.href}>
             <div class="entry__head entry__head--article">
@@ -128,6 +143,15 @@ const articles = [
   .role span {
     opacity: 0.7;
   }
+
+  .bio {
+    max-width: 46ch;
+    margin: 2.25rem 0 0;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
   .list-section {
     margin-bottom: 3.5rem;
     padding-top: 2.25rem;
@@ -207,5 +231,41 @@ const articles = [
   .all-link:hover, .all-link:focus-visible {
     color: var(--accent);
     border-color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    .identity {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .name {
+      gap: 1.25rem;
+    }
+
+    .index {
+      margin-top: 0.5rem;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 15vw, 4.5rem);
+    }
+
+    .bio {
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .entry__head {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .entry__head--article {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.3rem;
+    }
   }
 </style>

@@ -2,16 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 /*
-Project Props
-{   number: ...,
-    name: ...,
-    year: ...,
-    type: ...,
-    description: ...,
-    tags: ...,
-    status: ...,
-    href: ...,
-    source: ...,
+Project shape:
+  number, name, year, type, description,
+  tags, status, href, source
 */
 
 const projects = [
@@ -58,13 +51,14 @@ const filters = ['ALL', 'WEB', 'SYSTEMS', 'TOOLS', 'EXPERIMENTS'];
 ---
 
 <BaseLayout
-  title="Projects — x291"
+  title="Projects — Sami Dj"
   description="A collection of software, experiments, and things I've built."
 >
 
   <div class="projects">
 
     <header class="projects__header">
+      <span class="index">2</span>
       <span class="annot">projects.log</span>
 
       <h1>Things I've built,<br /><em>broken,</em> and fixed.</h1>
@@ -236,7 +230,12 @@ const filters = ['ALL', 'WEB', 'SYSTEMS', 'TOOLS', 'EXPERIMENTS'];
     color: var(--ink-soft);
   }
 
-
+  .index {
+    margin-top: 0.7rem;
+    font-family: monospace;
+    font-size: 0.7rem;
+    opacity: 0.4;
+  }
   /* ───────────────── Filters ───────────────── */
 
   .filters {

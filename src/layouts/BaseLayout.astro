@@ -6,24 +6,15 @@ import EmailRail from '../components/EmailRail.astro';
 interface Props {
   title: string;
   description?: string;
-  lang?: 'en' | 'ar';
 }
 
 const {
   title,
   description = 'Software engineer and technical writer.',
-  lang = 'en',
 } = Astro.props;
-
-const dir = lang === 'ar' ? 'rtl' : 'ltr';
-
-const t = {
-  en: { top: 'back to top ↑', built: 'built with Astro', skip: 'Skip to content' },
-  ar: { top: 'العودة للأعلى ↑', built: 'مبني باستخدام Astro', skip: 'تخطَّ إلى المحتوى' },
-}[lang];
 ---
 <!doctype html>
-<html lang={lang} dir={dir}>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,17 +22,10 @@ const t = {
   <title>{title}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  {lang === 'ar' ? (
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"
-      rel="stylesheet"
-    />
-  ) : (
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap"
-      rel="stylesheet"
-    />
-  )}
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap"
+    rel="stylesheet"
+  />
   <script is:inline>
     (function () {
       var stored = localStorage.getItem('theme');
@@ -52,14 +36,14 @@ const t = {
   </script>
 </head>
 <body id="top">
-  <a href="#main-content" class="skip-link">{t.skip}</a>
+  <a href="#main-content" class="skip-link">Skip to content</a>
   <div class="frame">
-    <Nav lang={lang} />
-    <SocialRail lang={lang} />
+    <Nav />
+    <SocialRail />
     <main class="main" id="main-content" tabindex="-1">
       <slot />
     </main>
-    <EmailRail lang={lang} />
+    <EmailRail />
     <footer class="foot">
       <div class="foot__identity">
 	<span class="foot__motto">still curious.</span>
@@ -102,11 +86,6 @@ const t = {
     --rail-w: 4.5rem;
 
     color-scheme: light;
-  }
-
-  :root[lang="ar"] {
-    --font-mono: 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif;
-    --font-serif: 'Amiri', 'Noto Naskh Arabic', 'Traditional Arabic', serif;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -279,7 +258,7 @@ const t = {
     letter-spacing: 0.01em;
     margin-bottom: 0.6rem;
   }
-  [lang="en"] .annot::before { content: "// "; opacity: 0.7; }
+  .annot::before { content: "// "; opacity: 0.7; }
 
   @media (max-width: 860px) {
     .frame {
@@ -292,4 +271,9 @@ const t = {
         "foot";
     }
     .main { padding: 2.25rem 1.25rem 4rem; }
+  }
+
+  @media (max-width: 480px) {
+    .main { padding: 1.75rem 1rem 3rem; }
+    .foot { padding: 1.25rem 1rem; }
   }

@@ -1,12 +1,10 @@
 ---
-interface Props { lang?: 'en' | 'ar' }
-const { lang = 'en' } = Astro.props;
 const email = 'samidgallabi45@gmail.com';
 ---
 <aside class="rail rail--email" aria-label="Email contact">
   <a href={`mailto:${email}`}>
     <span class="dot" aria-hidden="true"></span>
-    <span class:list={["text", { "text--rtl": lang === 'ar' }]}>{email}</span>
+    <span class="text">{email}</span>
   </a>
 </aside>
 
@@ -50,12 +48,6 @@ const email = 'samidgallabi45@gmail.com';
     letter-spacing: 0.04em;
   }
 
-  /* Arabic vertical text is impractical (script is cursive/connected); keep flat */
-  .text--rtl {
-    writing-mode: horizontal-tb;
-    font-size: 0.68rem;
-  }
-
   @media (max-width: 860px) {
     .rail--email {
       position: static;
@@ -65,6 +57,16 @@ const email = 'samidgallabi45@gmail.com';
     }
     .rail--email .text {
       writing-mode: horizontal-tb;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .rail--email {
+      padding: 0.85rem 1rem;
+    }
+    .rail--email .text {
+      font-size: 0.68rem;
+      word-break: break-all;
     }
   }
 </style>
