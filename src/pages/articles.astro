@@ -1,0 +1,1090 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { calculateReadingTime } from '../lib/readingTime';
+
+const articles = await getCollection('articles', ({ data }) => {
+  return data.draft !== true;
+});
+
+const articleData = articles.map((article) => ({
+  article,
+  readingTime: calculateReadingTime(article.body ?? ''),
+}));
+
+articleData.sort(
+  (a, b) =>
+    new Date(b.article.data.date).getTime() -
+    new Date(a.article.data.date).getTime()
+);
+
+const categories = [
+  'ALL',
+  ...new Set(
+    articleData.map(({ article }) => article.data.category)
+  ),
+];
+---
+
+<BaseLayout
+  title="Articles — Sami Dj"
+  description="Notes on computers, systems, programming, and mathematics."
+>
+  <div class="articles">
+
+    <!-- Header -->
+
+    <header class="articles__header">
+      <span class="annot">writings.log</span>
+
+      <h1>
+        Notes from the<br />
+        <em>rabbit holes.</em>
+      </h1>
+
+      <p>
+        I write about computers, systems, mathematics, and whatever
+        I find interesting enough to understand.
+      </p>
+    </header>
+
+
+    <!-- Search -->
+
+    <div class="search">
+      <label for="article-search">
+        search
+      </label>
+
+      <div class="search__input">
+        <span class="search__prompt">&gt;</span>
+
+        <input
+          id="article-search"
+          type="search"
+          placeholder="search articles..."
+          autocomplete="off"
+        />
+
+        <span class="search__count">
+          {articleData.length} articles
+        </span>
+      </div>
+    </div>
+
+
+    <!-- Categories -->
+
+    <section class="filter-section">
+
+      <div class="filter-label">
+        category
+      </div>
+
+      <nav
+        class="categories"
+        aria-label="Article categories"
+      >
+        {
+          categories.map((category, index) => (
+            <button
+              type="button"
+              class:list={{ active: index === 0 }}
+              data-category={category}
+            >
+              {category}
+            </button>
+          ))
+        }
+      </nav>
+
+    </section>
+
+
+    <!-- Tags -->
+
+    <section class="filter-section filter-section--tags">
+
+      <div class="filter-label">
+        tags
+      </div>
+
+      <div
+        class="tags"
+        id="tags"
+      >
+      </div>
+
+    </section>
+
+
+    <!-- Archive -->
+
+    <section class="archive">
+
+      <div class="archive__header">
+        <span>archive</span>
+
+        <span id="result-count">
+          {articleData.length} articles
+        </span>
+      </div>
+
+
+      <div id="article-list">
+
+        {
+          articleData.map(({ article, readingTime }) => (
+            <article
+              class="article"
+              data-category={article.data.category}
+              data-tags={article.data.tags.join('|')}
+              data-search={
+                `${article.data.title}
+                ${article.data.description}
+                ${article.data.category}
+                ${article.data.tags.join(' ')}`
+                  .toLowerCase()
+              }
+            >
+
+              <div class="article__date">
+                <time
+                  datetime={article.data.date.toISOString()}
+                >
+                  {
+                    article.data.date
+                      .toLocaleDateString('en', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                      })
+                      .toUpperCase()
+                  }
+                </time>
+              </div>
+
+
+              <div class="article__body">
+
+                <div class="article__meta">
+                  <span>{article.data.category}</span>
+                  <span>·</span>
+                  <span>{readingTime} min read</span>
+                </div>
+
+
+                <h2>
+                  <a
+                    href={`/articles/${article.slug}/`}
+                  >
+                    {article.data.title}
+                  </a>
+                </h2>
+
+
+                <p>
+                  {article.data.description}
+                </p>
+
+
+                <div class="article__tags">
+                  {
+                    article.data.tags.map((tag) => (
+                      <button
+                        type="button"
+                        data-article-tag={tag}
+                      >
+                        #{tag}
+                      </button>
+                    ))
+                  }
+                </div>
+
+              </div>
+
+
+              <a
+                href={`/articles/${article.slug}/`}
+                class="article__arrow"
+                aria-label={`Read ${article.data.title}`}
+              >
+                →
+              </a>
+
+            </article>
+          ))
+        }
+
+      </div>
+
+
+      <!-- Empty state -->
+
+      <div
+        id="empty-state"
+        class="empty"
+        hidden
+      >
+        <span class="annot">
+          nothing found
+        </span>
+
+        <p>
+          No articles match the current filters.
+        </p>
+      </div>
+
+    </section>
+
+
+    <!-- Footer -->
+
+    <footer class="articles__footer">
+
+      <span class="annot">
+        end of archive
+      </span>
+
+      <p>
+        <span id="footer-count">
+          {articleData.length}
+        </span>
+        articles and counting.
+      </p>
+
+    </footer>
+
+  </div>
+</BaseLayout>
+
+
+<script>
+  const articles = Array.from(
+    document.querySelectorAll<HTMLElement>(
+      '.article'
+    )
+  );
+
+  const categoryButtons =
+    Array.from(
+      document.querySelectorAll<HTMLButtonElement>(
+        '.categories button'
+      )
+    );
+
+  const tagContainer =
+    document.querySelector<HTMLElement>(
+      '#tags'
+    );
+
+  const searchInput =
+    document.querySelector<HTMLInputElement>(
+      '#article-search'
+    );
+
+  const resultCount =
+    document.querySelector<HTMLElement>(
+      '#result-count'
+    );
+
+  const searchCount =
+    document.querySelector<HTMLElement>(
+      '.search__count'
+    );
+
+  const emptyState =
+    document.querySelector<HTMLElement>(
+      '#empty-state'
+    );
+
+
+  let selectedCategory = 'ALL';
+
+  const selectedTags =
+    new Set<string>();
+
+  let searchQuery = '';
+
+
+  /*
+   * Return the tags that are used by
+   * articles in the selected category.
+   */
+
+  function getAvailableTags(): string[] {
+    const filtered =
+      selectedCategory === 'ALL'
+        ? articles
+        : articles.filter(
+            article =>
+              article.dataset.category ===
+              selectedCategory
+          );
+
+    const tags =
+      new Set<string>();
+
+    filtered.forEach(article => {
+      const articleTags =
+        article.dataset.tags
+          ?.split('|')
+          .filter(Boolean) ?? [];
+
+      articleTags.forEach(tag =>
+        tags.add(tag)
+      );
+    });
+
+    return [...tags].sort();
+  }
+
+
+  /*
+   * Render tags dynamically.
+   */
+
+  function renderTags() {
+    if (!tagContainer) return;
+
+    const availableTags =
+      getAvailableTags();
+
+
+    /*
+     * Remove selected tags that are no longer
+     * available in the selected category.
+     */
+
+    for (const tag of selectedTags) {
+      if (!availableTags.includes(tag)) {
+        selectedTags.delete(tag);
+      }
+    }
+
+
+    tagContainer.innerHTML = '';
+
+
+    availableTags.forEach(tag => {
+      const button =
+        document.createElement('button');
+
+      button.type = 'button';
+      button.textContent = `#${tag}`;
+      button.dataset.tag = tag;
+
+
+      if (selectedTags.has(tag)) {
+        button.classList.add('active');
+      }
+
+
+      button.addEventListener(
+        'click',
+        () => {
+          if (selectedTags.has(tag)) {
+            selectedTags.delete(tag);
+          } else {
+            selectedTags.add(tag);
+          }
+
+          renderTags();
+          filterArticles();
+        }
+      );
+
+
+      tagContainer.appendChild(button);
+    });
+
+
+    if (availableTags.length === 0) {
+      const empty =
+        document.createElement('span');
+
+      empty.className =
+        'tags__empty';
+
+      empty.textContent =
+        'no tags';
+
+      tagContainer.appendChild(empty);
+    }
+  }
+
+
+  /*
+   * Apply category, tag and search filters.
+   */
+
+  function filterArticles() {
+    let visible = 0;
+
+
+    articles.forEach(article => {
+      const category =
+        article.dataset.category ?? '';
+
+      const tags =
+        article.dataset.tags
+          ?.split('|')
+          .filter(Boolean) ?? [];
+
+      const searchable =
+        article.dataset.search ?? '';
+
+
+      const categoryMatches =
+        selectedCategory === 'ALL' ||
+        category === selectedCategory;
+
+
+      /*
+       * An article must contain every
+       * selected tag.
+       */
+
+      const tagsMatch =
+        [...selectedTags].every(
+          tag => tags.includes(tag)
+        );
+
+
+      const searchMatches =
+        searchable.includes(searchQuery);
+
+
+      const matches =
+        categoryMatches &&
+        tagsMatch &&
+        searchMatches;
+
+
+      article.hidden =
+        !matches;
+
+
+      if (matches) {
+        visible++;
+      }
+    });
+
+
+    const label =
+      `${visible} ${
+        visible === 1
+          ? 'article'
+          : 'articles'
+      }`;
+
+
+    if (resultCount) {
+      resultCount.textContent =
+        label;
+    }
+
+
+    if (searchCount) {
+      searchCount.textContent =
+        label;
+    }
+
+
+    if (emptyState) {
+      emptyState.hidden =
+        visible !== 0;
+    }
+  }
+
+
+  /*
+   * Category filtering.
+   */
+
+  categoryButtons.forEach(button => {
+
+    button.addEventListener(
+      'click',
+      () => {
+
+        selectedCategory =
+          button.dataset.category ?? 'ALL';
+
+        selectedTags.clear();
+
+
+        categoryButtons.forEach(button =>
+          button.classList.remove('active')
+        );
+
+
+        button.classList.add('active');
+
+
+        renderTags();
+        filterArticles();
+      }
+    );
+
+  });
+
+
+  /*
+   * Search.
+   */
+
+  searchInput?.addEventListener(
+    'input',
+    () => {
+
+      searchQuery =
+        searchInput.value
+          .trim()
+          .toLowerCase();
+
+      filterArticles();
+    }
+  );
+
+
+  /*
+   * Clicking a tag displayed on an article
+   * activates that tag filter.
+   */
+
+  document
+    .querySelectorAll<HTMLButtonElement>(
+      '[data-article-tag]'
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        'click',
+        () => {
+
+          const tag =
+            button.dataset.articleTag;
+
+          if (!tag) return;
+
+
+          selectedTags.clear();
+          selectedTags.add(tag);
+
+
+          /*
+           * If we're currently showing ALL
+           * categories, keep ALL selected.
+           *
+           * Otherwise keep the current category.
+           */
+
+          renderTags();
+          filterArticles();
+
+
+          tagContainer?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+          });
+        }
+      );
+
+    });
+
+
+  /*
+   * Initial state.
+   */
+
+  renderTags();
+  filterArticles();
+</script>
+
+
+<style>
+
+  /* Header */
+
+  .articles__header {
+    padding: 1rem 0 3.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+
+  .articles__header h1 {
+    margin: 0;
+
+    font-size:
+      clamp(2.6rem, 7vw, 4.5rem);
+
+    line-height: 1;
+    letter-spacing: -0.045em;
+    font-weight: 600;
+  }
+
+
+  .articles__header h1 em {
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+
+  .articles__header p {
+    max-width: 44ch;
+
+    margin: 1.75rem 0 0;
+
+    color: var(--ink-soft);
+  }
+
+
+  /* Search */
+
+  .search {
+    padding: 1.5rem 0;
+
+    border-bottom:
+      1px solid var(--line);
+  }
+
+
+  .search > label {
+    display: block;
+
+    margin-bottom: 0.5rem;
+
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+
+    color: var(--ink-soft);
+  }
+
+
+  .search__input {
+    display: flex;
+    align-items: center;
+
+    min-height: 3rem;
+
+    border:
+      1px solid var(--line);
+
+    padding: 0 0.85rem;
+
+    background:
+      var(--paper-raised);
+  }
+
+
+  .search__prompt {
+    margin-right: 0.65rem;
+
+    color: var(--mark);
+
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+
+
+  .search input {
+    flex: 1;
+
+    min-width: 0;
+
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+
+    color: var(--ink);
+
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+
+
+  .search input::placeholder {
+    color: var(--ink-soft);
+    opacity: 0.7;
+  }
+
+
+  .search__count {
+    margin-left: 1rem;
+
+    white-space: nowrap;
+
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+
+    color: var(--ink-soft);
+  }
+
+
+  /* Filters */
+
+  .filter-section {
+    padding: 1.25rem 0;
+
+    border-bottom:
+      1px solid var(--line);
+  }
+
+
+  .filter-label {
+    margin-bottom: 0.75rem;
+
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+
+    color: var(--ink-soft);
+  }
+
+
+  .categories,
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 0.5rem 1.1rem;
+  }
+
+
+  .categories button,
+  .tags button {
+    padding: 0;
+
+    border: 0;
+    background: transparent;
+
+    color: var(--ink-soft);
+
+    cursor: pointer;
+
+    font-family: var(--font-mono);
+    font-size: 0.63rem;
+
+    transition:
+      color 0.15s ease;
+  }
+
+
+  .categories button:hover,
+  .categories button.active {
+    color: var(--accent);
+  }
+
+
+  .categories button::before {
+    content: '[';
+
+    margin-right: 0.25rem;
+
+    color: var(--mark);
+
+    opacity: 0;
+  }
+
+
+  .categories button::after {
+    content: ']';
+
+    margin-left: 0.25rem;
+
+    color: var(--mark);
+
+    opacity: 0;
+  }
+
+
+  .categories button.active::before,
+  .categories button.active::after {
+    opacity: 1;
+  }
+
+
+  .tags button {
+    border:
+      1px solid var(--line);
+
+    padding:
+      0.25rem 0.5rem;
+  }
+
+
+  .tags button:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+
+  .tags button.active {
+    border-color: var(--accent);
+
+    background:
+      var(--accent);
+
+    color: var(--paper);
+  }
+
+
+  .tags__empty {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+
+    color: var(--ink-soft);
+  }
+
+
+  /* Archive */
+
+  .archive {
+    margin-top: 2.5rem;
+  }
+
+
+  .archive__header {
+    display: flex;
+    justify-content: space-between;
+
+    padding-bottom: 0.75rem;
+
+    border-bottom:
+      1px solid var(--line);
+
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+
+    color: var(--ink-soft);
+
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+
+  .article {
+    display: grid;
+
+    grid-template-columns:
+      7rem minmax(0, 1fr) 2rem;
+
+    gap: 1.25rem;
+
+    padding: 2rem 0;
+
+    border-bottom:
+      1px solid var(--line);
+  }
+
+
+  .article[hidden] {
+    display: none;
+  }
+
+
+  .article__date {
+    padding-top: 0.25rem;
+
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+
+    color: var(--mark);
+
+    line-height: 1.5;
+  }
+
+
+  .article__meta {
+    display: flex;
+    gap: 0.4rem;
+
+    margin-bottom: 0.4rem;
+
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+
+    color: var(--ink-soft);
+
+    text-transform: uppercase;
+  }
+
+
+  .article__body h2 {
+    margin: 0;
+
+    font-size: 1.55rem;
+    line-height: 1.2;
+
+    letter-spacing: -0.02em;
+  }
+
+
+  .article__body h2 a {
+    color: var(--ink);
+
+    text-decoration: none;
+  }
+
+
+  .article__body h2 a:hover {
+    color: var(--accent);
+  }
+
+
+  .article__body > p {
+    max-width: 48ch;
+
+    margin: 0.65rem 0 0;
+
+    color: var(--ink-soft);
+
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+
+  .article__tags {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 0.4rem;
+
+    margin-top: 1rem;
+  }
+
+
+  .article__tags button {
+    padding:
+      0.18rem 0.4rem;
+
+    border:
+      1px solid var(--line);
+
+    background: transparent;
+
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+
+    color: var(--ink-soft);
+
+    cursor: pointer;
+
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+
+
+  .article__tags button:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+
+  .article__arrow {
+    align-self: center;
+
+    color: var(--ink-soft);
+
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+
+    text-decoration: none;
+
+    transition:
+      transform 0.15s ease,
+      color 0.15s ease;
+  }
+
+
+  .article:hover .article__arrow {
+    transform: translateX(3px);
+    color: var(--accent);
+  }
+
+
+  /* Empty */
+
+  .empty {
+    padding: 4rem 0;
+
+    text-align: center;
+
+    color: var(--ink-soft);
+  }
+
+
+  .empty p {
+    margin: 0.5rem 0 0;
+  }
+
+
+  /* Footer */
+
+  .articles__footer {
+    padding: 2.5rem 0 0;
+  }
+
+
+  .articles__footer p {
+    margin: 0.75rem 0 0;
+
+    color: var(--ink-soft);
+  }
+
+
+  /* Mobile */
+
+  @media (max-width: 650px) {
+
+    .articles__header {
+      padding-bottom: 2.75rem;
+    }
+
+
+    .search__count {
+      display: none;
+    }
+
+
+    .article {
+      grid-template-columns:
+        1fr 1.5rem;
+
+      gap: 0.5rem;
+    }
+
+
+    .article__date {
+      grid-column: 1 / -1;
+
+      padding: 0;
+
+      margin-bottom: 0.25rem;
+    }
+
+
+    .article__body {
+      grid-column: 1;
+    }
+
+
+    .article__arrow {
+      grid-column: 2;
+      grid-row: 2;
+
+      align-self: start;
+
+      padding-top: 0.1rem;
+    }
+
+
+    .article__body h2 {
+      font-size: 1.3rem;
+    }
+
+  }
+
+</style>
