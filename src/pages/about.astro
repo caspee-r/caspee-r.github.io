@@ -1,0 +1,155 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Replace every entry below with your real story. Keep the format if you like it —
+// newest first, like a real CHANGELOG.md — or restructure freely.
+const unreleased = {
+  title: 'What I\'m working on',
+  body: 'Placeholder \u2014 say what you\u2019re building or learning right now, and where you want this to go next.',
+};
+
+const entries = [
+  {
+    version: 'v3.0.0',
+    range: '2024 \u2014 present',
+    title: 'Started writing seriously',
+    body: 'Placeholder \u2014 the moment writing stopped being a side skill and became part of the job. What made you start, and what changed once you did?',
+  },
+  {
+    version: 'v2.0.0',
+    range: '2020 \u2014 2024',
+    title: 'Became a software engineer',
+    body: 'Placeholder \u2014 first real job, the stack you learned, a project or failure that actually taught you something.',
+  },
+  {
+    version: 'v1.0.0',
+    range: '2018',
+    title: 'First stable release',
+    body: 'Placeholder \u2014 the first thing you built and shipped that someone other than you used.',
+  },
+  {
+    version: 'v0.1.0',
+    range: 'earlier',
+    title: 'Origin',
+    body: 'I was introduced to computers at a very early age, around six years old, and they quickly became a part of my everyday life. Over the years, my curiosity grew from simply using computers to wanting to understand how they actually work. Mr. Robot played a big role in sparking my interest in the world of computers and technology, while my ADHD brain constantly pushes me to explore, question, and dive into new things. ',
+  },
+];
+---
+<BaseLayout title="About — Sami Djellabi" lang="en">
+  <section class="intro">
+    <span class="annot">about</span>
+    <h1>Changelog</h1>
+    <p class="intro__text">
+      Software has release notes. This is mine \u2014 the long version of how I got
+      here, in the order it actually happened.
+    </p>
+  </section>
+
+  <section class="log" aria-label="Personal changelog">
+    <div class="log__entry log__entry--unreleased">
+      <div class="log__head">
+        <span class="tag tag--unreleased">Unreleased</span>
+      </div>
+      <h2>{unreleased.title}</h2>
+      <p>{unreleased.body}</p>
+    </div>
+
+    {entries.map((e) => (
+      <div class="log__entry">
+        <div class="log__head">
+          <span class="tag">{e.version}</span>
+          <span class="range">{e.range}</span>
+        </div>
+        <h2>{e.title}</h2>
+        <p>{e.body}</p>
+      </div>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .intro { margin-bottom: 3.5rem; }
+
+  .intro h1 {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(1.7rem, 4.5vw, 2.2rem);
+    margin: 0 0 1rem;
+  }
+
+  .intro__text {
+    color: var(--ink-soft);
+    max-width: var(--measure);
+    margin: 0;
+  }
+
+  .log {
+    border-top: 1px solid var(--line);
+  }
+
+  .log__entry {
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .log__head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    padding: 0.1rem 0.5rem;
+  }
+
+  .tag--unreleased {
+    color: var(--mark);
+    border-color: var(--mark);
+    position: relative;
+    padding-inline-start: 1.1rem;
+  }
+  .tag--unreleased::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--mark);
+  }
+
+  .range {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+  }
+
+  .log__entry h2 {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.4rem;
+  }
+
+  .log__entry p {
+    margin: 0;
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+
+  .log__entry--unreleased {
+    background: var(--paper-raised);
+    margin: 0 -1.5rem 0;
+    padding: 1.75rem 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+</style>

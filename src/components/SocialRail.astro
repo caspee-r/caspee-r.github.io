@@ -1,0 +1,118 @@
+---
+interface Props { lang?: 'en' | 'ar' }
+const { lang = 'en' } = Astro.props;
+
+const label = lang === 'ar' ? 'أخرى' : 'elsewhere';
+
+const socials = [
+  {
+    label: 'GitHub',
+    href: 'https://github.com/caspee-r',
+    path: 'M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.5 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.36-3.37-1.36-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.34 1.12 2.91.86.09-.66.35-1.12.63-1.38-2.22-.26-4.56-1.15-4.56-5.11 0-1.13.39-2.05 1.03-2.78-.1-.26-.45-1.32.1-2.75 0 0 .84-.28 2.75 1.06a9.28 9.28 0 0 1 5 0c1.91-1.34 2.75-1.06 2.75-1.06.55 1.43.2 2.49.1 2.75.64.73 1.03 1.65 1.03 2.78 0 3.97-2.34 4.85-4.57 5.1.36.32.68.95.68 1.93 0 1.39-.01 2.51-.01 2.85 0 .28.18.61.69.5A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z',
+  },
+  {
+    label: 'LinkedIn',
+    href: 'https://linkedin.com/in/sami-djellabi-3b7b851a5/',
+    path: 'M6.94 8.5H3.56V21h3.38V8.5ZM5.25 3a1.96 1.96 0 1 0 0 3.92 1.96 1.96 0 0 0 0-3.92ZM21 21v-6.98c0-3.34-1.78-4.9-4.16-4.9a3.59 3.59 0 0 0-3.25 1.8V8.5H10.2c.05.96 0 12.5 0 12.5h3.38v-6.98c0-.37.03-.75.14-1.02.31-.75 1-1.53 2.18-1.53 1.54 0 2.16 1.17 2.16 2.9V21H21Z',
+  },
+  {
+    label: 'X / Twitter',
+    href: 'https://x.com/caspee_r',
+    path: 'M18.9 3H21l-6.55 7.49L22.2 21h-6.14l-4.81-6.29L5.7 21H3.58l7.01-8.01L2.8 3h6.29l4.35 5.75L18.9 3Zm-1.08 16.17h1.14L7.24 4.75H6.02l11.8 14.42Z',
+  },
+  {
+    label: 'RSS',
+    href: '/rss.xml',
+    path: 'M4 3a1 1 0 0 0 0 2 15 15 0 0 1 15 15 1 1 0 1 0 2 0A17 17 0 0 0 4 3Zm0 6a1 1 0 0 0 0 2 9 9 0 0 1 9 9 1 1 0 1 0 2 0A11 11 0 0 0 4 9Zm1.5 8a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z',
+  },
+];
+---
+<aside class="rail rail--social" aria-label="Social links">
+  <ul>
+    {socials.map((s) => (
+      <li>
+        <a href={s.href} title={s.label} aria-label={s.label} target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path d={s.path} fill="currentColor" />
+          </svg>
+        </a>
+      </li>
+    ))}
+  </ul>
+  <span class:list={["rail__label", { "rail__label--rtl": lang === 'ar' }]}>{label}</span>
+</aside>
+
+<style>
+  .rail {
+    grid-area: social;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.1rem;
+    position: sticky;
+    top: 40vh;
+    padding: 1rem 0;
+    align-self: start;
+  }
+
+  .rail ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .rail a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    color: var(--ink-soft);
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+
+  .rail a:hover,
+  .rail a:focus-visible {
+    color: var(--accent);
+    transform: translateX(2px);
+  }
+
+  .rail__label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  /* Arabic script doesn't render well rotated in vertical-rl; keep it flat and small */
+  .rail__label--rtl {
+    writing-mode: horizontal-tb;
+    transform: none;
+    font-size: 0.6rem;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    max-width: 3.5rem;
+    text-align: center;
+  }
+
+  @media (max-width: 860px) {
+    .rail {
+      grid-area: social;
+      position: static;
+      flex-direction: row;
+      justify-content: center;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .rail ul { flex-direction: row; gap: 1.5rem; }
+    .rail__label { display: none; }
+  }
+</style>

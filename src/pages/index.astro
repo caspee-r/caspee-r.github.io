@@ -1,0 +1,182 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const projects = [
+  {
+    name: 'schema-diff',
+    desc: 'A CLI that turns two database schemas into a plain-English changelog instead of a wall of SQL.',
+    href: 'https://github.com/yourname/schema-diff',
+  },
+  {
+    name: 'docs-lint',
+    desc: 'A linter for prose in technical docs — catches unexplained jargon, dead links, and stale code samples.',
+    href: 'https://github.com/yourname/docs-lint',
+  },
+];
+
+const articles = [
+  {
+    date: '2026.07',
+    title: 'Writing docs engineers actually read',
+    dek: 'Why the best technical docs read like well-commented code, not marketing copy.',
+    href: '/articles/writing-docs-engineers-read',
+  },
+  {
+    date: '2026.03',
+    title: 'The half-life of a good README',
+    dek: 'Most READMEs are accurate on day one and wrong by day ninety. Here is how to slow the decay.',
+    href: '/articles/half-life-of-a-readme',
+  },
+];
+---
+<BaseLayout title="Sami Djellabi — Software Engineer & Technical Writer" lang="en">
+  <section class="identity">
+    <h1>Sami Djellabi</h1>
+    <p class="role">Software engineer. Technical writer.</p>
+  </section>
+
+  <section class="list-section" aria-labelledby="work-heading">
+    <span class="annot">selected work</span>
+    <h2 id="work-heading" class="visually-hidden">Selected work</h2>
+    <ul class="entries">
+      {projects.map((p) => (
+        <li class="entry">
+          <a class="entry__link" href={p.href} target="_blank" rel="noopener noreferrer">
+            <div class="entry__head">
+              <h3>{p.name}</h3>
+              <span class="entry__arrow" aria-hidden="true">→</span>
+            </div>
+            <p>{p.desc}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <a class="all-link" href="/projects">All projects →</a>
+  </section>
+
+  <section class="list-section" aria-labelledby="writing-heading">
+    <span class="annot">selected writing</span>
+    <h2 id="writing-heading" class="visually-hidden">Writing</h2>
+    <ul class="entries">
+      {articles.map((a) => (
+        <li class="entry">
+          <a class="entry__link" href={a.href}>
+            <div class="entry__head entry__head--article">
+              <time class="entry__date">{a.date}</time>
+              <h3>{a.title}</h3>
+            </div>
+            <p>{a.dek}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <a class="all-link" href="/articles">All articles →</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .identity { margin-bottom: 4rem; }
+
+  .identity h1 {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(1.7rem, 4.5vw, 2.2rem);
+    letter-spacing: 0.01em;
+    margin: 0 0 0.6rem;
+  }
+
+  .role {
+    color: var(--ink-soft);
+    margin: 0;
+    font-size: 1.05rem;
+  }
+
+  .list-section {
+    margin-bottom: 3.5rem;
+    padding-top: 2.25rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .entries {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .entry { border-bottom: 1px solid var(--line); }
+  .entry:first-child { border-top: 1px solid var(--line); }
+
+  .entry__link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 1.25rem 0;
+    transition: background 0.15s ease;
+  }
+  .entry__link:hover,
+  .entry__link:focus-visible {
+    background: var(--paper-raised);
+  }
+
+  .entry__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .entry__head--article { justify-content: flex-start; gap: 1rem; }
+
+  .entry h3 {
+    font-family: var(--font-mono);
+    font-size: 0.98rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .entry__date {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--mark);
+    flex: none;
+  }
+
+  .entry__arrow {
+    font-family: var(--font-mono);
+    color: var(--ink-soft);
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  .entry__link:hover .entry__arrow {
+    transform: translateX(3px);
+    color: var(--accent);
+  }
+
+  .entry p {
+    margin: 0.4rem 0 0;
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+
+  .all-link {
+    display: inline-block;
+    margin-top: 1.1rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .all-link:hover, .all-link:focus-visible {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+</style>

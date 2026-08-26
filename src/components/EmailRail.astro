@@ -1,0 +1,70 @@
+---
+interface Props { lang?: 'en' | 'ar' }
+const { lang = 'en' } = Astro.props;
+const email = 'samidgallabi45@gmail.com';
+---
+<aside class="rail rail--email" aria-label="Email contact">
+  <a href={`mailto:${email}`}>
+    <span class="dot" aria-hidden="true"></span>
+    <span class:list={["text", { "text--rtl": lang === 'ar' }]}>{email}</span>
+  </a>
+</aside>
+
+<style>
+  .rail--email {
+    grid-area: email;
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    top: 40vh;
+    align-self: start;
+    padding: 1rem 0;
+  }
+
+  .rail--email a {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--ink-soft);
+    transition: color 0.15s ease;
+  }
+
+  .rail--email a:hover,
+  .rail--email a:focus-visible {
+    color: var(--accent);
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--mark);
+    flex: none;
+  }
+
+  .text {
+    writing-mode: vertical-rl;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* Arabic vertical text is impractical (script is cursive/connected); keep flat */
+  .text--rtl {
+    writing-mode: horizontal-tb;
+    font-size: 0.68rem;
+  }
+
+  @media (max-width: 860px) {
+    .rail--email {
+      position: static;
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .rail--email .text {
+      writing-mode: horizontal-tb;
+    }
+  }
+</style>

@@ -1,0 +1,154 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// استبدل كل عنصر أدناه بقصتك الحقيقية.
+const unreleased = {
+  title: 'ما أعمل عليه الآن',
+  body: 'نص مؤقت \u2014 اذكر ما تبنيه أو تتعلمه حالياً، وإلى أين تريد أن يصل هذا.',
+};
+
+const entries = [
+  {
+    version: 'v3.0.0',
+    range: '2024 \u2014 الآن',
+    title: 'بدأت الكتابة بجدية',
+    body: 'نص مؤقت \u2014 اللحظة التي توقفت فيها الكتابة عن كونها مهارة جانبية وأصبحت جزءاً من العمل.',
+  },
+  {
+    version: 'v2.0.0',
+    range: '2020 \u2014 2024',
+    title: 'أصبحت مهندس برمجيات',
+    body: 'نص مؤقت \u2014 أول وظيفة حقيقية، والتقنيات التي تعلمتها، ومشروع أو فشل علّمك شيئاً فعلياً.',
+  },
+  {
+    version: 'v1.0.0',
+    range: '2018',
+    title: 'أول إصدار مستقر',
+    body: 'نص مؤقت \u2014 أول شيء بنيته وأطلقته واستخدمه شخص غيرك.',
+  },
+  {
+    version: 'v0.1.0',
+    range: 'قبل ذلك',
+    title: 'البداية',
+    body: 'تعرّفت على الحواسيب في سن مبكرة جدًا، حوالي السادسة من عمري، ومنذ ذلك الحين أصبحت جزءًا من حياتي اليومية. ومع مرور الوقت، تحوّل اهتمامي من مجرد استخدام الحاسوب إلى الرغبة في فهم كيفية عمله وما يحدث خلف الكواليس. كان لمسلسل Mr. Robot دور كبير في إثارة اهتمامي بعالم الحاسوب والتكنولوجيا، كما أن عقلي المصاب بـ ADHD يدفعني باستمرار إلى الاستكشاف وطرح الأسئلة والغوص في أشياء جديدة.',
+  },
+];
+---
+<BaseLayout title="نبذة عني — سامي جلابي" lang="ar">
+  <section class="intro">
+    <span class="annot">نبذة</span>
+    <h1>سجل التغييرات</h1>
+    <p class="intro__text">
+      للبرمجيات ملاحظات إصدار. وهذه ملاحظاتي \u2014 النسخة الطويلة لكيف وصلت إلى هنا،
+      بالترتيب الذي حدث فعلاً.
+    </p>
+  </section>
+
+  <section class="log" aria-label="سجل التغييرات الشخصي">
+    <div class="log__entry log__entry--unreleased">
+      <div class="log__head">
+        <span class="tag tag--unreleased">قيد التطوير</span>
+      </div>
+      <h2>{unreleased.title}</h2>
+      <p>{unreleased.body}</p>
+    </div>
+
+    {entries.map((e) => (
+      <div class="log__entry">
+        <div class="log__head">
+          <span class="tag">{e.version}</span>
+          <span class="range">{e.range}</span>
+        </div>
+        <h2>{e.title}</h2>
+        <p>{e.body}</p>
+      </div>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .intro { margin-bottom: 3.5rem; }
+
+  .intro h1 {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(1.7rem, 4.5vw, 2.2rem);
+    margin: 0 0 1rem;
+  }
+
+  .intro__text {
+    color: var(--ink-soft);
+    max-width: var(--measure);
+    margin: 0;
+  }
+
+  .log {
+    border-top: 1px solid var(--line);
+  }
+
+  .log__entry {
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .log__head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    padding: 0.1rem 0.5rem;
+  }
+
+  .tag--unreleased {
+    color: var(--mark);
+    border-color: var(--mark);
+    position: relative;
+    padding-inline-start: 1.1rem;
+  }
+  .tag--unreleased::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--mark);
+  }
+
+  .range {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+  }
+
+  .log__entry h2 {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.4rem;
+  }
+
+  .log__entry p {
+    margin: 0;
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+
+  .log__entry--unreleased {
+    background: var(--paper-raised);
+    margin: 0 -1.5rem 0;
+    padding: 1.75rem 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+</style>

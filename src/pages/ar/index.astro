@@ -1,0 +1,182 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const projects = [
+  {
+    name: 'schema-diff',
+    desc: 'أداة سطر أوامر تحوّل الفرق بين مخططيّ قاعدتي بيانات إلى سجل تغييرات مقروء، بدل جدار من SQL.',
+    href: 'https://github.com/yourname/schema-diff',
+  },
+  {
+    name: 'docs-lint',
+    desc: 'أداة تدقيق للنصوص التقنية — تكتشف المصطلحات غير المشروحة، والروابط الميتة، وأمثلة الكود القديمة.',
+    href: 'https://github.com/yourname/docs-lint',
+  },
+];
+
+const articles = [
+  {
+    date: '٢٠٢٦.٠٧',
+    title: 'كتابة توثيق يقرأه المهندسون فعلاً',
+    dek: 'لماذا يشبه التوثيق التقني الجيد تعليقات الكود المرتبة، لا نصوص التسويق.',
+    href: '/ar/articles/writing-docs-engineers-read',
+  },
+  {
+    date: '٢٠٢٦.٠٣',
+    title: 'نصف عمر ملف README جيد',
+    dek: 'معظم ملفات README دقيقة في يومها الأول وخاطئة بعد تسعين يوماً. إليك كيف تُبطئ هذا التآكل.',
+    href: '/ar/articles/half-life-of-a-readme',
+  },
+];
+---
+<BaseLayout title="سامي جلابي — مهندس برمجيات وكاتب تقني" lang="ar">
+  <section class="identity">
+    <h1>سامي جلابي</h1>
+    <p class="role">مهندس برمجيات. كاتب تقني.</p>
+  </section>
+
+  <section class="list-section" aria-labelledby="work-heading">
+    <span class="annot">أعمال مختارة</span>
+    <h2 id="work-heading" class="visually-hidden">أعمال مختارة</h2>
+    <ul class="entries">
+      {projects.map((p) => (
+        <li class="entry">
+          <a class="entry__link" href={p.href} target="_blank" rel="noopener noreferrer">
+            <div class="entry__head">
+              <h3>{p.name}</h3>
+              <span class="entry__arrow" aria-hidden="true">←</span>
+            </div>
+            <p>{p.desc}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <a class="all-link" href="/ar/projects">كل المشاريع ←</a>
+  </section>
+
+  <section class="list-section" aria-labelledby="writing-heading">
+    <span class="annot">كتابات مختارة</span>
+    <h2 id="writing-heading" class="visually-hidden">كتابات مختارة</h2>
+    <ul class="entries">
+      {articles.map((a) => (
+        <li class="entry">
+          <a class="entry__link" href={a.href}>
+            <div class="entry__head entry__head--article">
+              <time class="entry__date">{a.date}</time>
+              <h3>{a.title}</h3>
+            </div>
+            <p>{a.dek}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <a class="all-link" href="/ar/articles">كل المقالات ←</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .identity { margin-bottom: 4rem; }
+
+  .identity h1 {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(1.7rem, 4.5vw, 2.2rem);
+    letter-spacing: 0;
+    margin: 0 0 0.6rem;
+  }
+
+  .role {
+    color: var(--ink-soft);
+    margin: 0;
+    font-size: 1.05rem;
+  }
+
+  .list-section {
+    margin-bottom: 3.5rem;
+    padding-top: 2.25rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .entries {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .entry { border-bottom: 1px solid var(--line); }
+  .entry:first-child { border-top: 1px solid var(--line); }
+
+  .entry__link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 1.25rem 0;
+    transition: background 0.15s ease;
+  }
+  .entry__link:hover,
+  .entry__link:focus-visible {
+    background: var(--paper-raised);
+  }
+
+  .entry__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .entry__head--article { justify-content: flex-start; gap: 1rem; }
+
+  .entry h3 {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .entry__date {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--mark);
+    flex: none;
+  }
+
+  .entry__arrow {
+    font-family: var(--font-mono);
+    color: var(--ink-soft);
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  .entry__link:hover .entry__arrow {
+    transform: translateX(-3px);
+    color: var(--accent);
+  }
+
+  .entry p {
+    margin: 0.4rem 0 0;
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+
+  .all-link {
+    display: inline-block;
+    margin-top: 1.1rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .all-link:hover, .all-link:focus-visible {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+</style>
