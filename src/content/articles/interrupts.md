@@ -55,7 +55,7 @@ An external event that indicates a condition requiring immediate attention from 
 
 # The anatomy of interrupts in Intel 8086 CPU
 
-![img](/public/interrupts.png)
+![img](static/interrupts.png)
 
 The old 8086 cpu package has 40-pin *DIP*, two interrupt-request inputs, NMI and INTR, and one interrupt-acknowledge output, INTA:
 
@@ -73,7 +73,7 @@ This pin is used for normal device events, when a device needs to send an interr
 
 > quick note: Today, PIC is almost replaced by APIC which stands for **advanced programmable interrupt controller**.
 
-The 8259 PIC has 8 **IRQ** (interrupt request) lines, IRQ0 to IRQ7 i.e 8 peripherals to connect to it. the PIC can be configured to forward or mask a device IRQ, and manage interrupts, this is why it's a *controller*. in order to route devices interrupts it must be wired to the cpu INTR pin. ![img](/public/pic.jpeg)
+The 8259 PIC has 8 **IRQ** (interrupt request) lines, IRQ0 to IRQ7 i.e 8 peripherals to connect to it. the PIC can be configured to forward or mask a device IRQ, and manage interrupts, this is why it's a *controller*. in order to route devices interrupts it must be wired to the cpu INTR pin. ![img](static/pic.jpeg)
 
 
 ## Non Mask-able Interrupts (NMI)
