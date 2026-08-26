@@ -22,11 +22,22 @@ const t = {
     otherLang: 'en', otherLabel: 'EN', resume: 'السيرة الذاتية', resumeHref: '/resume.pdf',
   },
 }[lang];
-const otherHref = lang === 'ar' ? '/' : '/ar';
+const pathname = Astro.url.pathname;
+
+const otherHref =
+  lang === 'ar'
+    ? pathname === '/ar'
+      ? '/'
+      : pathname.replace(/^\/ar(?=\/|$)/, '')
+    : pathname === '/'
+      ? '/ar'
+      : `/ar${pathname}`;
 ---
 <nav class="nav" id="top">
   <div class="nav__primary">
-    <a href={t.home} class="nav__mark">{t.mark}</a>
+    <a href={t.home} class="nav__mark" aria-label="Sami Djellabi">
+      <span>S</span><span class="nav__mark-dot">.</span><span>D</span><span class="nav__mark-dot">.</span>
+    </a>
     <ul class="nav__links">
       {t.links.map((l) => (
         <li><a href={l.href}>[ {l.label} ]</a></li>
@@ -74,14 +85,45 @@ const otherHref = lang === 'ar' ? '/' : '/ar';
     row-gap: 0.5rem;
   }
 
-  .nav__mark {
-    font-family: var(--font-mono);
-    font-weight: 700;
-    font-size: 0.95rem;
-    letter-spacing: 0.03em;
-    text-decoration: none;
-    color: var(--ink);
-  }
+.nav__mark {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1;
+
+  letter-spacing: -0.08em;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.nav__mark::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.35rem;
+
+  height: 1px;
+  background: var(--accent);
+
+  transform: scaleX(0.35);
+  transform-origin: left;
+  opacity: 0.7;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.nav__mark:hover::after,
+.nav__mark:focus-visible::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
 
   .nav__links {
     display: flex;
