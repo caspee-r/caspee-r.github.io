@@ -1,26 +1,3 @@
----
-title: "How the CPU Knows Something Happened ?"
-description: "interrupts in intel 8086 cpu"
-date: 2026-08-18
-category: "Low Level"
-tags:
-  - "8086"
-toc:
-  - title: "The Idea Behind Interrupts"
-    id: "the-idea-behind-interrupts"
-  - title: "Two Classes of Hardware Events"
-    id: "two-classes-of-hardware-events"
-  - title: "The anatomy of interrupts in Intel 8086 CPU"
-    id: "the-anatomy-of-interrupts-in-intel-8086-cpu"
-  - title: "Interrupt Request and Interrupt Acknowledgment"
-    id: "interrupt-request-and-interrupt-acknowledgment"
-  - title: "We have Got the Interrupt Vector, Now What ?"
-    id: "we-have-got-the-interrupt-vector-now-what"
-  - title: "Outro"
-    id: "outro"
-
----
-
 The almighty cpu needs to talk to other devices, for instance the keyboard. in order for the cpu to get the keyboard input he has 2 choices:
 
 1.  check repeatedly if there is any keyboard input (polling).
@@ -55,7 +32,7 @@ An external event that indicates a condition requiring immediate attention from 
 
 # The anatomy of interrupts in Intel 8086 CPU
 
-![img](static/interrupts.png)
+[static/interrupts.png](/static/interrupts.png)
 
 The old 8086 cpu package has 40-pin *DIP*, two interrupt-request inputs, NMI and INTR, and one interrupt-acknowledge output, INTA:
 
@@ -73,7 +50,7 @@ This pin is used for normal device events, when a device needs to send an interr
 
 > quick note: Today, PIC is almost replaced by APIC which stands for **advanced programmable interrupt controller**.
 
-The 8259 PIC has 8 **IRQ** (interrupt request) lines, IRQ0 to IRQ7 i.e 8 peripherals to connect to it. the PIC can be configured to forward or mask a device IRQ, and manage interrupts, this is why it's a *controller*. in order to route devices interrupts it must be wired to the cpu INTR pin. ![img](static/pic.jpeg)
+The 8259 PIC has 8 **IRQ** (interrupt request) lines, IRQ0 to IRQ7 i.e 8 peripherals to connect to it. the PIC can be configured to forward or mask a device IRQ, and manage interrupts, this is why it's a *controller*. in order to route devices interrupts it must be wired to the cpu INTR pin. [static/pic.jpeg](/static/pic.jpeg)
 
 
 ## Non Mask-able Interrupts (NMI)
