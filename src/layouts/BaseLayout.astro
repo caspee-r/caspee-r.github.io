@@ -51,7 +51,7 @@ const t = {
     })();
   </script>
 </head>
-<body>
+<body id="top">
   <a href="#main-content" class="skip-link">{t.skip}</a>
   <div class="frame">
     <Nav lang={lang} />
@@ -61,8 +61,25 @@ const t = {
     </main>
     <EmailRail lang={lang} />
     <footer class="foot">
-      <p>&copy; {new Date().getFullYear()} — {t.built}.</p>
-      <a href="#top" class="foot__top">{t.top}</a>
+      <div class="foot__identity">
+	<span class="foot__motto">still curious.</span>
+
+	<span>
+	  © {new Date().getFullYear()} sami dj
+	</span>
+      </div>
+
+      <div class="foot__links">
+	<a href="https://github.com/caspr">github</a>
+	<span aria-hidden="true">·</span>
+	<a href="/rss.xml">rss</a>
+	<span aria-hidden="true">·</span>
+	<span>built with Astro</span>
+      </div>
+
+      <a href="#top" class="foot__top">
+	↑ top
+      </a>
     </footer>
   </div>
 </body>
@@ -191,28 +208,69 @@ const t = {
     padding: 3.5rem 1.5rem 6rem;
   }
 
+.foot {
+  grid-area: foot;
+  border-top: 1px solid var(--line);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--ink-soft);
+}
+
+.foot__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.foot__motto {
+  color: var(--accent);
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+.foot__links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.foot a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+}
+
+.foot a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.foot__top {
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
   .foot {
-    grid-area: foot;
-    border-top: 1px solid var(--line);
-    padding: 1.25rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .foot__links {
     flex-wrap: wrap;
-    gap: 0.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--ink-soft);
-    letter-spacing: 0.02em;
   }
 
   .foot__top {
-    text-decoration: none;
-    color: var(--ink-soft);
-    border-bottom: 1px solid var(--line);
+    margin-top: 0.5rem;
   }
-  .foot__top:hover { color: var(--accent); border-color: var(--accent); }
-
+}
   .annot {
     display: block;
     font-family: var(--font-mono);
