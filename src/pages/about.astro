@@ -1,155 +1,450 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// Replace every entry below with your real story. Keep the format if you like it —
-// newest first, like a real CHANGELOG.md — or restructure freely.
-const unreleased = {
-  title: 'What I\'m working on',
-  body: 'Placeholder \u2014 say what you\u2019re building or learning right now, and where you want this to go next.',
-};
-
-const entries = [
-  {
-    version: 'v3.0.0',
-    range: '2024 \u2014 present',
-    title: 'Started writing seriously',
-    body: 'Placeholder \u2014 the moment writing stopped being a side skill and became part of the job. What made you start, and what changed once you did?',
-  },
-  {
-    version: 'v2.0.0',
-    range: '2020 \u2014 2024',
-    title: 'Became a software engineer',
-    body: 'Placeholder \u2014 first real job, the stack you learned, a project or failure that actually taught you something.',
-  },
-  {
-    version: 'v1.0.0',
-    range: '2018',
-    title: 'First stable release',
-    body: 'Placeholder \u2014 the first thing you built and shipped that someone other than you used.',
-  },
-  {
-    version: 'v0.1.0',
-    range: 'earlier',
-    title: 'Origin',
-    body: 'I was introduced to computers at a very early age, around six years old, and they quickly became a part of my everyday life. Over the years, my curiosity grew from simply using computers to wanting to understand how they actually work. Mr. Robot played a big role in sparking my interest in the world of computers and technology, while my ADHD brain constantly pushes me to explore, question, and dive into new things. ',
-  },
-];
+const title = 'About — x291';
+const description = 'About me, my journey into computers, and the things I like to build and understand.';
 ---
-<BaseLayout title="About — Sami Djellabi" lang="en">
-  <section class="intro">
-    <span class="annot">about</span>
-    <h1>Changelog</h1>
-    <p class="intro__text">
-      Software has release notes. This is mine \u2014 the long version of how I got
-      here, in the order it actually happened.
-    </p>
-  </section>
 
-  <section class="log" aria-label="Personal changelog">
-    <div class="log__entry log__entry--unreleased">
-      <div class="log__head">
-        <span class="tag tag--unreleased">Unreleased</span>
+<BaseLayout title={title} description={description}>
+
+  <article class="about">
+
+    <!-- Header -->
+    <header class="about__header">
+      <span class="annot">about.exe</span>
+
+      <h1>
+        A machine I<br />
+        never stopped <em>taking apart.</em>
+      </h1>
+
+      <p class="lede">
+        I got introduced to computers when I was six.
+        I never really left.
+      </p>
+    </header>
+
+
+    <!-- Origin -->
+    <section class="chapter">
+      <div class="chapter__meta">
+        <span>01</span>
+        <span>ORIGIN</span>
       </div>
-      <h2>{unreleased.title}</h2>
-      <p>{unreleased.body}</p>
-    </div>
 
-    {entries.map((e) => (
-      <div class="log__entry">
-        <div class="log__head">
-          <span class="tag">{e.version}</span>
-          <span class="range">{e.range}</span>
+      <div class="chapter__body">
+        <p>
+          My first encounter with a computer happened at an early age,
+          around six years old. From then on, computers became part of
+          my everyday life.
+        </p>
+
+        <p>
+          At first, I was simply using them. Games, software, the
+          internet — whatever was interesting at the time. But eventually
+          a different question started appearing:
+        </p>
+
+        <blockquote>
+          <span>“</span>
+          <p>How does this thing actually work?</p>
+        </blockquote>
+
+        <p>
+          That question turned out to be considerably more interesting
+          than the answers.
+        </p>
+      </div>
+    </section>
+
+
+    <!-- Obsession -->
+    <section class="chapter">
+      <div class="chapter__meta">
+        <span>02</span>
+        <span>OBSESSION</span>
+      </div>
+
+      <div class="chapter__body">
+        <p>
+          My interest in computers eventually became an interest in
+          <strong>computing itself</strong>.
+        </p>
+
+        <p>
+          I wanted to understand what happens underneath the abstractions:
+          how programs communicate with an operating system, how memory
+          is organized, how a CPU executes instructions, how networks
+          move information, and why seemingly simple things are built
+          the way they are.
+        </p>
+
+        <p>
+          <em>Mr. Robot</em> played a surprisingly large part in that.
+          It made computers feel less like appliances and more like
+          machines worth understanding.
+        </p>
+
+        <p>
+          And, honestly, my ADHD brain probably didn't help.
+          It has a habit of finding something interesting and then
+          immediately asking:
+        </p>
+
+        <div class="terminal">
+          <div class="terminal__bar">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <div class="terminal__body">
+            <span class="prompt">$</span>
+            <span>why?</span>
+            <span class="cursor">_</span>
+          </div>
         </div>
-        <h2>{e.title}</h2>
-        <p>{e.body}</p>
+
+        <p class="soft">
+          Then another question appears. And another.
+        </p>
       </div>
-    ))}
-  </section>
+    </section>
+
+
+    <!-- What I do -->
+    <section class="chapter">
+      <div class="chapter__meta">
+        <span>03</span>
+        <span>INTERESTS</span>
+      </div>
+
+      <div class="chapter__body">
+        <p>
+          These days, I'm particularly interested in the parts of
+          computing that expose what's underneath the surface.
+        </p>
+
+        <div class="interests">
+          <div class="interest">
+            <span class="interest__number">01</span>
+            <h2>Systems</h2>
+            <p>
+              Operating systems, computer architecture, networking,
+              low-level programming, and the boundary between software
+              and hardware.
+            </p>
+          </div>
+
+          <div class="interest">
+            <span class="interest__number">02</span>
+            <h2>Programming</h2>
+            <p>
+              I enjoy learning languages and building things with them,
+              especially when doing so reveals a different way of
+              thinking about software.
+            </p>
+          </div>
+
+          <div class="interest">
+            <span class="interest__number">03</span>
+            <h2>Mathematics</h2>
+            <p>
+              Discrete mathematics, logic, algorithms, and the mathematical
+              ideas that quietly sit underneath computer science.
+            </p>
+          </div>
+
+          <div class="interest">
+            <span class="interest__number">04</span>
+            <h2>Writing</h2>
+            <p>
+              Writing about what I learn forces me to understand it
+              properly. That's why I keep a technical blog.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Philosophy -->
+    <section class="chapter chapter--last">
+      <div class="chapter__meta">
+        <span>04</span>
+        <span>NOW</span>
+      </div>
+
+      <div class="chapter__body">
+        <p>
+          I don't think my goal is to learn everything about computers.
+          That's impossible.
+        </p>
+
+        <p>
+          What interests me is following the questions far enough
+          that the abstraction disappears.
+        </p>
+
+        <blockquote class="final-quote">
+          <p>
+            I like knowing what is happening underneath.
+          </p>
+        </blockquote>
+
+        <div class="about__links">
+          <a href="/projects">Explore my projects <span>→</span></a>
+          <a href="/articles">Read what I've learned <span>→</span></a>
+        </div>
+      </div>
+    </section>
+
+  </article>
+
 </BaseLayout>
 
+
 <style>
-  .intro { margin-bottom: 3.5rem; }
-
-  .intro h1 {
-    font-family: var(--font-mono);
-    font-weight: 700;
-    font-size: clamp(1.7rem, 4.5vw, 2.2rem);
-    margin: 0 0 1rem;
+  .about {
+    width: 100%;
   }
 
-  .intro__text {
-    color: var(--ink-soft);
-    max-width: var(--measure);
-    margin: 0;
-  }
-
-  .log {
-    border-top: 1px solid var(--line);
-  }
-
-  .log__entry {
-    padding: 1.75rem 0;
+  .about__header {
+    padding: 1rem 0 5rem;
     border-bottom: 1px solid var(--line);
   }
 
-  .log__head {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
+  .about__header h1 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(2.8rem, 8vw, 5rem);
+    font-weight: 600;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
   }
 
-  .tag {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 600;
+  .about__header h1 em {
     color: var(--accent);
-    border: 1px solid var(--accent);
-    border-radius: 3px;
-    padding: 0.1rem 0.5rem;
+    font-weight: 400;
   }
 
-  .tag--unreleased {
-    color: var(--mark);
-    border-color: var(--mark);
-    position: relative;
-    padding-inline-start: 1.1rem;
-  }
-  .tag--unreleased::before {
-    content: "";
-    position: absolute;
-    inset-inline-start: 0.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--mark);
+  .lede {
+    max-width: 38ch;
+    margin: 2rem 0 0;
+    color: var(--ink-soft);
+    font-size: 1.15rem;
   }
 
-  .range {
+  .chapter {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 1.5rem;
+    padding: 4rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .chapter__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding-top: 0.45rem;
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.05em;
+  }
+
+  .chapter__meta span:first-child {
+    color: var(--mark);
+  }
+
+  .chapter__body {
+    min-width: 0;
+  }
+
+  .chapter__body > p {
+    margin: 0 0 1.4rem;
+  }
+
+  .chapter__body > p:last-child {
+    margin-bottom: 0;
+  }
+
+  .chapter__body strong {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  blockquote {
+    position: relative;
+    margin: 2.5rem 0;
+    padding: 1.5rem 1.75rem;
+    border-left: 2px solid var(--mark);
+    background: var(--paper-raised);
+  }
+
+  blockquote span {
+    position: absolute;
+    top: -0.8rem;
+    left: 1rem;
+    font-family: Georgia, serif;
+    font-size: 3rem;
+    line-height: 1;
+    color: var(--mark);
+  }
+
+  blockquote p {
+    margin: 0;
+    font-size: 1.35rem;
+    font-style: italic;
+  }
+
+  .terminal {
+    margin: 2rem 0;
+    border: 1px solid var(--line);
+    background: var(--paper-raised);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+
+  .terminal__bar {
+    display: flex;
+    gap: 0.4rem;
+    padding: 0.55rem 0.7rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .terminal__bar span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink-soft);
+    opacity: 0.5;
+  }
+
+  .terminal__body {
+    padding: 1rem;
+  }
+
+  .prompt {
+    margin-right: 0.7rem;
+    color: var(--mark);
+  }
+
+  .cursor {
+    margin-left: 0.2rem;
+    color: var(--accent);
+    animation: blink 1.1s steps(2, start) infinite;
+  }
+
+  .soft {
     color: var(--ink-soft);
   }
 
-  .log__entry h2 {
-    font-family: var(--font-mono);
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 0 0 0.4rem;
+  .interests {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    margin-top: 2rem;
+    background: var(--line);
+    border: 1px solid var(--line);
   }
 
-  .log__entry p {
+  .interest {
+    padding: 1.5rem;
+    background: var(--paper);
+  }
+
+  .interest__number {
+    display: block;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--mark);
+  }
+
+  .interest h2 {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .interest p {
     margin: 0;
     color: var(--ink-soft);
-    max-width: var(--measure);
+    font-size: 0.9rem;
+    line-height: 1.6;
   }
 
-  .log__entry--unreleased {
-    background: var(--paper-raised);
-    margin: 0 -1.5rem 0;
-    padding: 1.75rem 1.5rem;
+  .chapter--last {
+    border-bottom: 0;
+    padding-bottom: 2rem;
+  }
+
+  .final-quote {
+    margin-top: 2.5rem;
+    border-left: 0;
+    border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
+    background: transparent;
+    padding: 2rem 0;
+  }
+
+  .final-quote p {
+    font-size: 1.6rem;
+    color: var(--accent);
+  }
+
+  .about__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .about__links a {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-decoration: none;
+    color: var(--ink);
+    border-bottom: 1px solid var(--ink-soft);
+    padding-bottom: 0.15rem;
+  }
+
+  .about__links a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .about__links span {
+    color: var(--mark);
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .about__header {
+      padding-bottom: 3.5rem;
+    }
+
+    .chapter {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 3rem 0;
+    }
+
+    .chapter__meta {
+      flex-direction: row;
+      gap: 0.75rem;
+    }
+
+    .interests {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
