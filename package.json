@@ -1,13 +1,14 @@
 {
-  "name": "caspeer personal website",
-  "type": "module",
-  "version": "1.0.0",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview"
-  },
-  "dependencies": {
-    "astro": "^4.15.0"
-  }
+	"name": "caspeer personal website",
+	"type": "module",
+	"version": "1.0.0",
+	"packageManager": "pnpm@11.3.0"
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview"
+	},
+	"dependencies": {
+		"astro": "^4.15.0"
+	},
 }
