@@ -1,3 +1,26 @@
+---
+title: "How the CPU Knows Something Happened ?"
+description: "interrupts in intel 8086 CPU."
+date: 2026-08-18
+category: "Low Level"
+tags:
+  - "8086"
+toc:
+  - title: "The Idea Behind Interrupts"
+    id: "the-idea-behind-interrupts"
+  - title: "Two Classes of Hardware Events"
+    id: "two-classes-of-hardware-events"
+  - title: "The anatomy of interrupts in Intel 8086 CPU"
+    id: "the-anatomy-of-interrupts-in-intel-8086-cpu"
+  - title: "Interrupt Request and Interrupt Acknowledgment"
+    id: "interrupt-request-and-interrupt-acknowledgment"
+  - title: "We have Got the Interrupt Vector, Now What ?"
+    id: "we-have-got-the-interrupt-vector-now-what"
+  - title: "Outro"
+    id: "outro"
+
+---
+
 The almighty cpu needs to talk to other devices, for instance the keyboard. in order for the cpu to get the keyboard input he has 2 choices:
 
 1.  check repeatedly if there is any keyboard input (polling).
