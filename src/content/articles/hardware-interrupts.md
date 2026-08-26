@@ -5,6 +5,9 @@ date: 2026-08-18
 category: "Low Level"
 tags:
   - "8086"
+externalLinks:
+  - label : "Medium"
+    url : "https://medium.com/@caspeer/how-the-cpu-knows-something-happened-873c1071c0c2"
 toc:
   - title: "The Idea Behind Interrupts"
     id: "the-idea-behind-interrupts"
@@ -16,8 +19,8 @@ toc:
     id: "interrupt-request-and-interrupt-acknowledgment"
   - title: "We have Got the Interrupt Vector, Now What ?"
     id: "we-have-got-the-interrupt-vector-now-what"
-  - title: "Outro"
-    id: "outro"
+  - title: "Wrapping Up"
+    id: "wrapping-up"
 
 ---
 
@@ -27,7 +30,6 @@ The almighty cpu needs to talk to other devices, for instance the keyboard. in o
 2.  fuck it i'm the almighty cpu, the keyboard will tell me if it have something for me (interrupts).
 
 Let me give a quick analogy: imagine you are waiting for someone to send a message, probably you keep checking the notifications over and over again, until he sends a message. you message him back then do the same thing again and again. in contrast the cpu has more important things to do instead of **waiting** 'someone' (peripheral) to sends him anything, he is not a simp. instead the device notify (interrupt) the cpu to handle an important event.
-
 
 # The Idea Behind Interrupts
 
@@ -91,7 +93,7 @@ When a peripheral signal the PIC for an interrupt, the PIC **determines** that t
 After a **successful** interrupt the cpu needs to handle it i.e execute code specific to handle this interrupt. but how does the 8086 cpu finds this code, it uses a lookup table i.e Interrupt Vector Table (IVT). IVT is a table of functions pointers or more accurately pointers to **interrupt handlers**, sometimes it's called **ISR** i.e interrupt service routine. The 8086 uses the interrupt vector to index the IVT and jumps to the interrupt handler execute it then jumps back to continue it's execution. Note that all critical hardware events has a fixed interrupt vector, for the 8086 NMI is associated with interrupt type 2..
 
 
-# Outro
+# Wrapping Up
 
 Instead of wasting CPU cycles constantly asking every device, **“Do you have something for me yet?”**, the hardware can raise an interrupt and let the CPU know when something actually needs its attention.
 
