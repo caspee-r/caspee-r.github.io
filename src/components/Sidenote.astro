@@ -1,0 +1,27 @@
+---
+/**
+ * A margin note (sidenote). Used inline in article MDX content —
+ * either written by hand:
+ *
+ *   Some claim<Sidenote>a caveat about it</Sidenote> continues here.
+ *
+ * or generated automatically from Org footnotes by the
+ * `caspeer/gfm-footnote-reference` export translator.
+ *
+ * The show/hide behavior is pure CSS (a hidden-but-focusable
+ * checkbox + label pair), so this needs no client-side script —
+ * all of it, including the float-into-the-margin treatment on
+ * wide screens, lives in the .sidenote-* rules in
+ * src/pages/articles/[slug].astro (or wherever those styles live
+ * in your project).
+ */
+import { randomUUID } from 'node:crypto';
+
+const noteId = `sidenote-${randomUUID()}`;
+---
+
+<span class="sidenote-wrapper">
+  <input type="checkbox" id={noteId} class="sidenote-checkbox" />
+  <label for={noteId} class="sidenote-toggle" aria-label="Note"></label>
+  <span class="sidenote-text"><slot /></span>
+</span>
