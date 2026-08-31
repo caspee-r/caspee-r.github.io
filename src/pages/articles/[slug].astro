@@ -619,23 +619,19 @@ font-display: swap;
   }
    /*
    * Give the article page more breathing room than the site's
-   * general 42rem column — and, above the two-column breakpoint
-   * further down, room for an actual reserved sidenote column,
-   * not just wider body text. 66rem = the 52rem reading column
-   * + a 2rem gutter + a 12rem sidenote track. Below that
-   * breakpoint this simply has no effect beyond the wider body
-   * text, since .article-layout stays single-column and there's
-   * nothing to reserve room for yet.
-   * This is scoped to :global(.main) inside this page's own
-   * stylesheet, which Astro only bundles onto pages that
-   * actually render this component — so it widens .main here
-   * without touching the homepage, /articles, or /projects.
+   * general 42rem column — sized close to the 68ch paragraph
+   * width itself (not much wider), so the centered box IS the
+   * reading column, rather than a wide box with text floating
+   * inside it. This is scoped to :global(.main) inside this
+   * page's own stylesheet, which Astro only bundles onto pages
+   * that actually render this component — so it widens .main
+   * here without touching the homepage, /articles, or /projects.
    */
    :global(.main) {
-     max-width: 66rem;
+     max-width: 46rem;
    }
    .article-header {
-     max-width: 52rem;
+     max-width: 46rem;
      padding:
       1rem 0
       3rem;
@@ -747,31 +743,9 @@ font-display: swap;
    */
    .article-layout {
      position: relative;
-     max-width: 52rem;
+     max-width: 46rem;
      padding:
       3rem 0 6rem;
-   }
-   /*
-   * Above the shared 1250px breakpoint (see the TOC and
-   * sidenote sections below — both switch in lockstep with
-   * this), the layout becomes a real two-column grid: the
-   * reading column, plus a genuinely reserved 12rem sidenote
-   * track with a 2rem gutter between them. Nothing is placed
-   * in that second column directly — sidenotes are still deeply
-   * nested inside paragraphs in column one — but because the
-   * track itself is real and fixed-width now, the sidenote's
-   * float/negative-margin only has to match that one fixed,
-   * known number, rather than a guess at ambient viewport
-   * whitespace. That's what actually fixes the "how much
-   * screen do I have" guessing game from before.
-   */
-   @media (min-width: 1250px) {
-     .article-layout {
-       max-width: 66rem;
-       display: grid;
-       grid-template-columns: minmax(0, 1fr) 12rem;
-       column-gap: 2rem;
-     }
    }
    .article-content {
      min-width: 0;
@@ -1146,15 +1120,19 @@ font-display: swap;
    * guarantees checked state has zero visual effect at this
    * width.
    *
-   * The numbers here are exact, not guessed: .article-layout
-   * (above) reserves a real 12rem column with a 2rem gutter at
-   * this same breakpoint, so width:12rem + margin-right:-14rem
-   * (gutter + width) lands the note exactly in that column
-   * every time — no viewport-width math, no ambient-whitespace
-   * guessing, no dependency on how wide the reader's actual
-   * window happens to be beyond clearing this one breakpoint.
+   * .main is a plain, always-centered 46rem here — no reserved
+   * second grid column, since that was centering the combined
+   * (content + gutter) block as one unit, which visually shoved
+   * the actual reading text left of true center. The sidenote
+   * is a real, deliberate size (12rem wide, 14rem total reach),
+   * but its safety comes entirely from the breakpoint: at
+   * 1320px, a centered 46rem .main leaves about 15.25rem of
+   * genuine ambient space past the text's own right edge before
+   * the right rail starts — safely more than the 14rem this
+   * needs. Lower this breakpoint only alongside re-checking that
+   * same margin.
    */
-   @media (min-width: 1250px) {
+   @media (min-width: 1320px) {
      .article-content :global(.sidenote-text),
     .article-content :global(.sidenote-checkbox:checked ~ .sidenote-text) {
       float: right;
@@ -1244,9 +1222,9 @@ font-display: swap;
      align-items: center;
      justify-content: center;
      width: 2.5rem;
-     min-height: 9rem;
+     min-height: 9.5rem;
      padding:
-      0.75rem 0.6rem;
+      1rem 0.7rem;
      border: 0;
      border-radius: 0.7rem;
      background: transparent;
@@ -1267,8 +1245,8 @@ font-display: swap;
      flex-direction: column;
      align-items: flex-end;
      justify-content: center;
-     gap: 0.85rem;
-     min-height: 11rem;
+     gap: 1.1rem;
+     min-height: 11.5rem;
    }
    .toc__marker {
      display: block;
@@ -1301,13 +1279,13 @@ font-display: swap;
    */
    .toc__panel {
      position: absolute;
-     left: 3rem;
+     left: 3.5rem;
      top: 50%;
-     width: 15rem;
+     width: 17rem;
      max-height: 70vh;
      overflow-y: auto;
      padding:
-      0.9rem;
+      1.35rem;
      border:
       1px solid var(--line);
      border-radius: 0.75rem;
@@ -1336,12 +1314,12 @@ font-display: swap;
        translateX(0);
    }
    .toc__title {
-     margin-bottom: 0.65rem;
-     padding-bottom: 0.55rem;
+     margin-bottom: 0.9rem;
+     padding-bottom: 0.75rem;
      border-bottom:
       1px solid var(--line);
      font-family: var(--font-mono);
-     font-size: 0.58rem;
+     font-size: 0.6rem;
      color: var(--ink-soft);
      text-transform: uppercase;
      letter-spacing: 0.05em;
@@ -1352,17 +1330,17 @@ font-display: swap;
      padding: 0;
    }
    .toc__item {
-     margin: 0;
+     margin: 0.15rem 0;
    }
    .toc__item a {
      display: block;
      padding:
-      0.35rem 0.45rem;
+      0.5rem 0.65rem;
      border-radius: 0.4rem;
      color: var(--ink-soft);
      font-family: var(--font-mono);
-     font-size: 0.62rem;
-     line-height: 1.5;
+     font-size: 0.68rem;
+     line-height: 1.6;
      text-decoration: none;
      transition:
        color 0.15s ease,
@@ -1390,44 +1368,33 @@ font-display: swap;
    * Indentation according to heading level.
    */
    .toc__item--level-2 {
-     padding-left: 0.65rem;
+     padding-left: 0.75rem;
    }
    .toc__item--level-3 {
-     padding-left: 1.3rem;
+     padding-left: 1.5rem;
    }
    .toc__item--level-4 {
-     padding-left: 1.95rem;
+     padding-left: 2.25rem;
    }
    /*
    * =========================================================
    * MOBILE / COMPACT
    *
-   * This breakpoint now matches the one .article-layout and
-   * the sidenotes use to switch into their two-column, wide-
-   * screen treatment (1250px) — not SocialRail's own 860px
-   * breakpoint. Those are two different concerns: SocialRail's
-   * 860px exists so the TOC doesn't collide with the *rail*,
-   * but the actual bug reported was the TOC colliding with the
-   * *article content* — which starts happening well above
-   * 860px, specifically once .main is wide enough that it can
-   * no longer stay centered and instead sits flush against the
-   * left rail (at this page's widened 66rem/52rem .main, that
-   * starts under ~1200px). Below 1250px the TOC now always
-   * uses the compact corner-button treatment, clearing that
-   * collision with real margin to spare.
+   * The TOC's desktop position spans ~5.5–8rem from the left
+   * edge. Below this breakpoint, the article text (starting
+   * right after .main's own padding) would sit closer than a
+   * 2rem minimum gap from that — so the TOC becomes a compact
+   * corner button instead. At 1050px, a centered 46rem .main
+   * keeps about 3.3rem between the two, comfortably over that
+   * 2rem minimum.
    *
-   * Known caveat: SocialRail/EmailRail still switch to their
-   * own horizontal/compact layout at 860px, unchanged (that
-   * file wasn't part of this edit). Between 861px and 1250px,
-   * the TOC's compact bottom-right button now shows while
-   * EmailRail may still be in its desktop vertical-rail form
-   * on the right edge — worth a visual check in that range;
-   * if they overlap, EmailRail's own breakpoint should move up
-   * to 1250px too, the same way SocialRail's did conceptually
-   * here.
+   * Independent of SocialRail/EmailRail's own 860px breakpoint
+   * on purpose — that one keeps the TOC clear of the *rail*,
+   * this one keeps it clear of the *article content*, which is
+   * a different, higher threshold.
    * =========================================================
    */
-   @media (max-width: 1250px) {
+   @media (max-width: 1050px) {
      .toc {
        left: auto;
        right: 1.25rem;
