@@ -4,14 +4,9 @@ import { getCollection } from 'astro:content';
 
 const projects = [
   {
-    name: 'schema-diff',
-    desc: 'A CLI that turns two database schemas into a plain-English changelog instead of a wall of SQL.',
-    href: 'https://github.com/yourname/schema-diff',
-  },
-  {
-    name: 'docs-lint',
-    desc: 'A linter for prose in technical docs — catches unexplained jargon, dead links, and stale code samples.',
-    href: 'https://github.com/yourname/docs-lint',
+    name: 'LifeLink',
+    desc: 'A web-based organ donation and transplantation platform designed for Algeria, connecting donors, recipients, and authorized medical centers through a secure, centralized system.',
+
   },
 ];
 
@@ -63,13 +58,23 @@ const recentArticles = allArticles
     <ul class="entries">
       {projects.map((p) => (
         <li class="entry">
-          <a class="entry__link" href={p.href} target="_blank" rel="noopener noreferrer">
-            <div class="entry__head">
-              <h3>{p.name}</h3>
-              <span class="entry__arrow" aria-hidden="true">→</span>
+          {p.href ? (
+            <a class="entry__link" href={p.href} target="_blank" rel="noopener noreferrer">
+              <div class="entry__head">
+                <h3>{p.name}</h3>
+                <span class="entry__arrow" aria-hidden="true">→</span>
+              </div>
+              <p>{p.desc}</p>
+            </a>
+          ) : (
+            <div class="entry__link entry__link--static">
+              <div class="entry__head">
+                <h3>{p.name}</h3>
+                <span class="entry__status">private</span>
+              </div>
+              <p>{p.desc}</p>
             </div>
-            <p>{p.desc}</p>
-          </a>
+          )}
         </li>
       ))}
     </ul>
@@ -174,9 +179,13 @@ const recentArticles = allArticles
     padding: 1.25rem 0;
     transition: background 0.15s ease;
   }
-  .entry__link:hover,
-  .entry__link:focus-visible {
+  .entry__link:not(.entry__link--static):hover,
+  .entry__link:not(.entry__link--static):focus-visible {
     background: var(--paper-raised);
+  }
+
+  .entry__link--static {
+    cursor: default;
   }
 
   .entry__head {
@@ -211,6 +220,16 @@ const recentArticles = allArticles
   .entry__link:hover .entry__arrow {
     transform: translateX(3px);
     color: var(--accent);
+  }
+
+  .entry__status {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    opacity: 0.55;
+    flex: none;
   }
 
   .entry p {
