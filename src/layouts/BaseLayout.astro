@@ -2,6 +2,7 @@
 import Nav from '../components/Nav.astro';
 import SocialRail from '../components/SocialRail.astro';
 import EmailRail from '../components/EmailRail.astro';
+import Footer from '../components/Footer.astro';
 
 interface Props {
   title: string;
@@ -44,27 +45,7 @@ const {
       <slot />
     </main>
     <EmailRail />
-    <footer class="foot">
-      <div class="foot__identity">
-	<span class="foot__motto">still curious.</span>
-
-	<span>
-	  © {new Date().getFullYear()} sami dj
-	</span>
-      </div>
-
-      <div class="foot__links">
-	<a href="https://github.com/caspr">github</a>
-	<span aria-hidden="true">·</span>
-	<a href="/rss.xml">rss</a>
-	<span aria-hidden="true">·</span>
-	<span>built with Astro</span>
-      </div>
-
-      <a href="#top" class="foot__top">
-	↑ top
-      </a>
-    </footer>
+    <Footer />
   </div>
 </body>
 </html>
@@ -187,69 +168,6 @@ const {
     padding: 3.5rem 1.5rem 6rem;
   }
 
-.foot {
-  grid-area: foot;
-  border-top: 1px solid var(--line);
-  padding: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--ink-soft);
-}
-
-.foot__identity {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.foot__motto {
-  color: var(--accent);
-  font-family: var(--font-serif);
-  font-size: 0.95rem;
-  font-style: italic;
-}
-
-.foot__links {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.foot a {
-  color: inherit;
-  text-decoration: none;
-  border-bottom: 1px solid var(--line);
-}
-
-.foot a:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-}
-
-.foot__top {
-  white-space: nowrap;
-}
-
-@media (max-width: 600px) {
-  .foot {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .foot__links {
-    flex-wrap: wrap;
-  }
-
-  .foot__top {
-    margin-top: 0.5rem;
-  }
-}
   .annot {
     display: block;
     font-family: var(--font-mono);
@@ -277,3 +195,4 @@ const {
     .main { padding: 1.75rem 1rem 3rem; }
     .foot { padding: 1.25rem 1rem; }
   }
+</style>
