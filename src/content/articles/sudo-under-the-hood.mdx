@@ -1,0 +1,191 @@
+---
+title: "Sudo Under the Hood"
+description: "How sudo actually works: setuid, euid, and the sudoers rules that decide who gets root, explained without the academic fog."
+date: 2026-10-05
+category: "Linux"
+tags:
+  - "sudo"
+  - "sysadmin"
+---
+
+import Sidenote from '../../components/Sidenote.astro';
+
+![Terminal joke: sudo make me a sandwich](/static/6-sudo-sandwich.svg)
+
+You type `sudo` in front of a command, enter your password, and suddenly you're allowed to do things that were off-limits a second ago. It feels a bit like magic, but it isn't.
+
+Under the hood, `sudo` is just a regular program with one special trick: it runs with root's powers no matter who launches it. Before it lets you do anything with those powers, it checks a rulebook, asks you to prove you are who you say you are, and only then runs your command as the user you asked for (usually root).
+
+In this article, we'll walk through what happens in the moments between hitting Enter and seeing your command run: how sudo gets its power, how it decides whether you're allowed, and why it asks for *your* password instead of root's.
+
+
+<a id="org7bdfdf4"></a>
+
+# Privileges are per process
+
+Linux doesn't associate privileges with users. Instead, it has two modes<Sidenote>Linux now also supports process capabilities.</Sidenote>: either the process was run by root (i.e. uid = 0), or it was run by a normal user. In the first case, the process has **all permissions to do whatever it wants**. Conversely, the second doesn't have permission to perform privileged operations (for example, binding low ports). In Linux, the first process (pid = 1) is usually the init process or systemd, which runs as root. It then invokes the *login manager*, which authenticates a user and then invokes a *window manager* with the authenticated user's uid. From that point on, every process is a child of the WM, i.e. it inherits its uid.
+
+![Process tree from systemd down to user programs, showing where the uid drops from 0 to 1000](/static/1-process-tree.svg)
+
+
+<a id="org47c4223"></a>
+
+# Kernel Checks
+
+When a process executes a binary<Sidenote>A process is always started by another process. Running a program from bash means that bash [exec](https://en.wikipedia.org/wiki/Exec_(system_call))s it.</Sidenote>, the newly created process inherits the **uid/euid**<Sidenote>uid is the id of the user who launched the program, and euid is the effective uid, which is used for privilege checks.</Sidenote> of its parent process. So when a process tries to do a privileged operation, the kernel checks whether the process's euid = 0 (i.e. it's root). Otherwise, it fails with "**Permission denied**", assuming no capabilities at all.
+
+<img
+  src="/static/2-kernel-check.svg"
+  alt="Flowchart: the kernel allows a privileged operation only if euid is 0"
+  style={{ clear: "both", display: "block" }}
+/>
+
+<a id="org2e84940"></a>
+
+# How a process can change its uid
+
+A process can call the **setuid/seteuid** system calls and pass the desired uid/euid.
+
+```c
+#include <unistd.h>
+int main(void)
+{
+        seteuid(0); // switch to root
+}
+```
+
+The problem is that setuid is a privileged operation, so a process can't change its uid to another user's uid unless it's already allowed to. We are stuck as normal users. We need a way to let a normal user change their euid.
+
+
+<a id="org02bdb80"></a>
+
+## The setuid Bit
+
+In Linux, files have permission metadata **(try `ls -l`)**. The setuid bit is a bit stored in this metadata. If it is set, the executable will run with its owner's uid as the process's euid<Sidenote>The kernel uses the euid for access control checks (read/write, etc.) and for privileged operation checks (generally, whether it equals 0).</Sidenote>. This means that an executable owned by root with the setuid bit set (and executable by other users), when run by a normal user, will actually execute as root, i.e. euid = 0.<Sidenote>Make sure your executable is not on a **nosuid** filesystem like tmpfs (`/tmp`).</Sidenote>
+
+<img
+  src="/static/3-setuid-bit.svg"
+  alt="ls -l output of /usr/bin/sudo with the setuid bit highlighted"
+  style={{ clear: "both", display: "block" }}
+/>
+
+
+<a id="org4ce60e1"></a>
+
+# Super User Do
+
+sudo is a program that lets a user run programs as other users (usually root) without needing to be root. If sudo required root, we'd be back at the **setuid paradox**. However, the sudo binary has the setuid bit set, and guess who the owner is? Yep, it's root. So now anyone can be root?! Well, no. sudo runs as root first so it can call seteuid to change to the appropriate user id, but even this is not enough. We need an **authorization mechanism** controlled by root, to define what each user is authorized to use sudo for. First, sudo needs to authenticate the user running it by asking for their account password. Then it consults the authorization rules in `/etc/sudoers`.
+
+
+<a id="org769f51a"></a>
+
+# Authorization Rules
+
+The sudoers file (`/etc/sudoers`) is basically a list of who's allowed to run what as whom. Each rule is one line.
+
+
+<a id="org124d017"></a>
+
+## The basic shape
+
+```sudoers
+who  where=(as_whom)  what
+```
+
+Example:
+
+```sudoers
+alice  ALL=(ALL:ALL)  ALL
+```
+
+Reading it left to right:
+
+-   **alice**: the user this rule is about
+-   **ALL** (first one): on which machines. It only matters if you share one sudoers file across many computers. On your own box, it's just `ALL`.
+-   **(ALL:ALL)**: she can act as any user, and any group
+-   **ALL** (last one): she can run any command
+
+So that line means "alice can do anything as anyone." Basically full admin.
+
+
+<a id="org6ce140b"></a>
+
+## Groups
+
+Put a `%` in front to mean a group instead of a user:
+
+```sudoers
+%wheel  ALL=(ALL:ALL)  ALL
+```
+
+"Anyone in the wheel group can do anything." This is the classic setup: you add people to the group instead of editing the file for each person. On Arch, you'd usually uncomment this line and add yourself to `wheel`.
+
+
+<a id="org7bd07ed"></a>
+
+## Limiting what someone can run
+
+You don't have to give away the keys to everything:
+
+```sudoers
+bob  ALL=(root)  /usr/bin/systemctl restart nginx
+```
+
+Bob can only restart nginx as root, nothing else. You can list several commands separated by commas.
+
+
+<a id="org4abed1e"></a>
+
+## No password prompt
+
+```sudoers
+alice  ALL=(ALL)  NOPASSWD: ALL
+```
+
+`NOPASSWD:` means sudo won't ask for a password. Handy for scripts and automation, but risky for a normal user account, since anyone sitting at your logged-in terminal gets root for free.
+
+
+<a id="org0583167"></a>
+
+## Aliases (nicknames)
+
+If you're repeating yourself, you can define shortcuts:
+
+```sudoers
+User_Alias   ADMINS = alice, bob
+Cmnd_Alias   WEB    = /usr/bin/systemctl restart nginx, /usr/bin/systemctl status nginx
+
+ADMINS  ALL=(root)  WEB
+```
+
+Meaning: "Alice and Bob can run those two nginx commands as root." It keeps big files readable.
+
+
+<a id="org5788d1b"></a>
+
+## Order matters
+
+Sudo reads the file top to bottom, and **the last matching rule wins**. So if a broad rule appears after a specific one, it can quietly override it. This trips people up a lot.
+
+
+<a id="orgb3744a9"></a>
+
+## Staying safe
+
+-   **Always edit with `visudo`**, not a normal editor. It checks the syntax before saving. A typo in sudoers can lock you out of sudo entirely.
+-   Instead of editing the main file, you can drop small files into `/etc/sudoers.d/` (use `visudo -f /etc/sudoers.d/myrule`). It's cleaner and easier to undo.
+-   Be stingy with `NOPASSWD` and with `ALL` commands. Giving someone sudo access to something like `vim` or `less` is effectively giving them root, because they can spawn a shell from inside it.
+
+![The six steps sudo goes through, from running it to your command executing](/static/4-sudo-flow.svg)
+
+## Footnotes
+
+<sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> Linux now also supports process capabilities.
+
+<sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> A process is always started by another process. Running a program from bash means that bash [exec](https://en.wikipedia.org/wiki/Exec_(system_call))s it.
+
+<sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> uid is the id of the user who launched the program, and euid is the effective uid, which is used for privilege checks.
+
+<sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> The kernel uses the euid for access control checks (read/write, etc.) and for privileged operation checks (generally, whether it equals 0).
+
+<sup><a id="fn.5" class="footnum" href="#fnr.5">5</a></sup> Make sure your executable is not on a **nosuid** filesystem like tmpfs (`/tmp`).
